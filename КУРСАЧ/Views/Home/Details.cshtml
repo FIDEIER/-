@@ -1,0 +1,74 @@
+﻿@model КУРСАЧ.Models.Book
+
+@{
+    ViewData["Title"] = "Карточка книги";
+}
+
+<h1>Карточка книги</h1>
+
+<div class="book-details">
+    <div class="detail-item">
+        <strong>Название:</strong> @Model.Title
+    </div>
+    <div class="detail-item">
+        <strong>Авторы:</strong> @string.Join(", ", Model.Authors.Select(a => a.Name))
+    </div>
+    <div class="detail-item">
+        <strong>Жанры:</strong> @string.Join(", ", Model.Genres.Select(g => g.Name))
+    </div>
+    <div class="detail-item">
+        <strong>Год издания:</strong> @Model.Year
+    </div>
+    <div class="detail-item">
+        <strong>Количество страниц:</strong> @Model.Pages
+    </div>
+    <div class="detail-item">
+        <strong>Статус:</strong>
+        <span class="status-@(Model.Status.Replace(" ", "-"))">@Model.Status</span>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <div class="detail-item">
+            <strong>Описание:</strong> @Model.Description
+        </div>
+    }
+</div>
+
+<div class="back-link">
+    <a href="/Home/Index">← Назад к каталогу</a>
+</div>
+
+<style>
+    .book-details {
+        max-width: 600px;
+        margin: 20px 0;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .detail-item {
+        padding: 6px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .back-link {
+        margin-top: 20px;
+    }
+
+    .status-В-наличии {
+        color: green;
+        font-weight: bold;
+    }
+
+    .status-Выдана {
+        color: orange;
+        font-weight: bold;
+    }
+
+    .status-В-ремонте {
+        color: red;
+        font-weight: bold;
+    }
+</style>

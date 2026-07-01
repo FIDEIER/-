@@ -1,8 +1,111 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<КУРСАЧ.Models.Book>
+
+@{
+    ViewData["Title"] = "Электронный каталог";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>
+    Электронный каталог
+    <span style="float: right; font-size: 18px; font-weight: normal;">
+        <a href="/Account/Login" class="login-link">Войти (администратор)</a>
+    </span>
+</h1>
+<!-- Форма поиска -->
+<form method="get" class="search-form">
+    <div class="search-row">
+        <input type="text" name="searchTitle" placeholder="Название книги" value="@ViewBag.SearchTitle" />
+        <input type="text" name="searchAuthor" placeholder="Автор" value="@ViewBag.SearchAuthor" />
+        <input type="text" name="searchGenre" placeholder="Жанр" value="@ViewBag.SearchGenre" />
+        <select name="searchStatus">
+            <option value="">Все статусы</option>
+            <option value="В наличии" selected="@(ViewBag.SearchStatus == "В наличии")">В наличии</option>
+            <option value="Выдана" selected="@(ViewBag.SearchStatus == "Выдана")">Выдана</option>
+            <option value="В ремонте" selected="@(ViewBag.SearchStatus == "В ремонте")">В ремонте</option>
+        </select>
+        <button type="submit">Найти</button>
+        <a href="/Home/Index" class="reset-link">Сбросить</a>
+    </div>
+</form>
+
+<!-- Список книг -->
+<div class="book-grid">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var book in Model)
+        {
+            <div class="book-card">
+                <h3>@book.Title</h3>
+                <p><strong>Авторы:</strong> @string.Join(", ", book.Authors.Select(a => a.Name))</p>
+                <p><strong>Жанры:</strong> @string.Join(", ", book.Genres.Select(g => g.Name))</p>
+                <p><strong>Год:</strong> @book.Year</p>
+                <p><strong>Страниц:</strong> @book.Pages</p>
+                <p>
+                    <strong>Статус:</strong>
+                    <span class="status-@(book.Status.Replace(" ", "-"))">@book.Status</span>
+                </p>
+                <a href="/Home/Details/@book.Id" class="btn-details">Подробнее</a>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Книги не найдены.</p>
+    }
 </div>
+
+<style>
+    .search-form {
+        margin-bottom: 30px;
+    }
+    .search-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+    .search-row input, .search-row select {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .search-row button {
+        padding: 8px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .reset-link {
+        color: #007bff;
+        text-decoration: none;
+        padding: 8px 12px;
+    }
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .book-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #f9f9f9;
+    }
+    .book-card h3 {
+        margin-top: 0;
+    }
+    .status-В-наличии { color: darkgreen; font-weight: bold; }
+    .status-Выдана { color: darkorange; font-weight: bold; }
+    .status-В-ремонте { color: darkred; font-weight: bold; }
+    .btn-details {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 14px;
+        background-color: #28a745;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+</style>

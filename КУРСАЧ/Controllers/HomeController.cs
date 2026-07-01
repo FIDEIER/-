@@ -1,32 +1,33 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using КУРСАЧ.Models;
+using КУРСАЧ.Services;
 
 namespace КУРСАЧ.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IBookService _bookService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IBookService bookService)
         {
-            _logger = logger;
+            _bookService = bookService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? searchTitle, string? searchAuthor, string? searchGenre, string? searchStatus)
         {
-            return View();
+            var books = await _bookService.SearchBooksAsync(searchTitle, searchAuthor, searchGenre, searchStatus);
+            ViewBag.SearchTitle = searchTitle;
+            ViewBag.SearchAuthor = searchAuthor;
+            ViewBag.SearchGenre = searchGenre;
+            ViewBag.SearchStatus = searchStatus;
+            return View(books);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+                return NotFound();
+            return View(book);
         }
     }
 }
