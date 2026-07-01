@@ -1,0 +1,152 @@
+﻿@model КУРСАЧ.Models.Book
+
+@{
+    ViewData["Title"] = "Редактировать книгу";
+    var authors = ViewBag.Authors as IEnumerable<КУРСАЧ.Models.Author> ?? new List<КУРСАЧ.Models.Author>();
+    var genres = ViewBag.Genres as IEnumerable<КУРСАЧ.Models.Genre> ?? new List<КУРСАЧ.Models.Genre>();
+    var selectedAuthors = ViewBag.SelectedAuthors as int[] ?? Array.Empty<int>();
+    var selectedGenres = ViewBag.SelectedGenres as int[] ?? Array.Empty<int>();
+}
+
+<h1>Редактировать книгу</h1>
+
+<form method="post" class="admin-form">
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label for="Title">Название</label>
+        <input type="text" id="Title" name="Title" value="@Model.Title" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Year">Год издания</label>
+        <input type="number" id="Year" name="Year" value="@Model.Year" required min="1000" max="2025" />
+    </div>
+
+    <div class="form-group">
+        <label for="Pages">Количество страниц</label>
+        <input type="number" id="Pages" name="Pages" value="@Model.Pages" required min="1" />
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Описание</label>
+        <textarea id="Description" name="Description" rows="4">@Model.Description</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="Status">Статус</label>
+        <select id="Status" name="Status">
+            <option value="В наличии" selected="@(Model.Status == "В наличии")">В наличии</option>
+            <option value="Выдана" selected="@(Model.Status == "Выдана")">Выдана</option>
+            <option value="В ремонте" selected="@(Model.Status == "В ремонте")">В ремонте</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Авторы</label>
+        <div class="checkbox-list">
+            @foreach (var author in authors)
+            {
+                <label>
+                    <input type="checkbox" name="selectedAuthors" value="@author.Id" checked="@(selectedAuthors.Contains(author.Id))" />
+                    @author.Name
+                </label>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Жанры</label>
+        <div class="checkbox-list">
+            @foreach (var genre in genres)
+            {
+                <label>
+                    <input type="checkbox" name="selectedGenres" value="@genre.Id" checked="@(selectedGenres.Contains(genre.Id))" />
+                    @genre.Name
+                </label>
+            }
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-save">Сохранить</button>
+        <a href="/Admin/Index" class="btn-cancel">Отмена</a>
+    </div>
+</form>
+
+<style>
+    .admin-form {
+        max-width: 600px;
+        margin: 20px 0;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+    .checkbox-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 5px;
+    }
+
+        .checkbox-list label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .checkbox-list input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-save {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .btn-save:hover {
+            background-color: #218838;
+        }
+
+    .btn-cancel {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+</style>
